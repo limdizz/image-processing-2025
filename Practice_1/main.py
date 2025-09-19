@@ -135,11 +135,11 @@ for i, threshold in enumerate(thresholds, 1):
     plt.show()
 
     mse_thresh_tozero = mean_squared_error(image, thresh_tozero)
-    print(f"Порог {threshold} - THRESH_TRUNC: MSE={mse_thresh_tozero:.4f}")
+    print(f"Порог {threshold} - THRESH_TOZERO: MSE={mse_thresh_tozero:.4f}")
 
     plt.imshow(thresh_tozero_inv, cmap='gray')
     plt.title(f'TO ZERO INV (порог={threshold})')
     plt.show()
 
     mse_thresh_tozero_inv = mean_squared_error(image, thresh_tozero_inv)
-    print(f"Порог {threshold} - THRESH_TRUNC: MSE={mse_thresh_tozero_inv:.4f}")
+    print(f"Порог {threshold} - THRESH_TOZERO_INV: MSE={mse_thresh_tozero_inv:.4f}")
