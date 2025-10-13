@@ -52,26 +52,32 @@ plt.imshow((grad - grad.min()) * 255, cmap="gray")
 plt.title("Исходное изображение: оператор Собеля")
 plt.show()
 
-# Canny
-edges = cv2.Canny(image_gray, 100, 200)
-plt.imshow(edges, cmap="gray")
+# Преобразование Хафа
+image_blur = cv2.GaussianBlur(image_gray, (5,5), 0)
+canny = cv2.Canny(image_blur, 50, 150, apertureSize=3)
+plt.imshow(canny, cmap="gray")
 plt.title("Исходное изображение: Сanny")
 plt.show()
 
-# Преобразование Хафа
-canny = cv2.Canny(image_gray, 50, 150, apertureSize=3)
-lines = cv2.HoughLines(canny, 1, np.pi / 180, 175)
+lines = cv2.HoughLines(canny, 1, np.pi / 180, 120)
+
 if lines is not None:
-    for i in range(0, len(lines)):
-        rho = lines[i][0][0]
-        theta = lines[i][0][1]
-        a = math.cos(theta)
-        b = math.sin(theta)
+    max_line = None
+    max_length = 0
+    for rho, theta in lines[:, 0]:
+        a = np.cos(theta)
+        b = np.sin(theta)
         x0 = a * rho
         y0 = b * rho
-        pt1 = (int(x0 + 1300 * (-b)), int(y0 + 800 * a))
-        pt2 = (int(x0 - 1000 * (-b)), int(y0 - 560 * a))
-        cv2.line(image, pt1, pt2, (0, 0, 255), 3, cv2.LINE_AA)
+        pt1 = (int(x0 + 1000 * (-b)), int(y0 + 1000 * a))
+        pt2 = (int(x0 - 1000 * (-b)), int(y0 - 1000 * a))
+        length = np.sqrt((pt1[0] - pt2[0]) ** 2 + (pt1[1] - pt2[1]) ** 2)
+        if length > max_length:
+            max_length = length
+            max_line = (pt1, pt2)
+    if max_line:
+        cv2.line(image, max_line[0], max_line[1], (0, 0, 255), 5, cv2.LINE_AA)
+
 plt.imshow(image)
-plt.title("Исходное изображение: преобразование Хафа")
+plt.title("Исходное изображение: самый протяжённый участок")
 plt.show()
