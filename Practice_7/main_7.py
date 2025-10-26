@@ -85,4 +85,4 @@ with open('wavelet_data.txt', 'r') as f:
 
 print(f"Размер исходного изображения: {original_size} байт")
 print(f"Размер сжатого изображения: {compressed_size} байт")
-print(f"Степень сжатия: {original_size / compressed_size:.2f} байт")
+print(f"Степень сжатия: {original_size / compressed_size:.2f} раз(а)")
