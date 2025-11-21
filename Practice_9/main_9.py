@@ -12,14 +12,13 @@ class SymbolsSequenceGenerator:
         self.symbols = list(('(', ')', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 't', 'x', 'y', ',', '+', '-', '*'))
         self.dataset_path = dataset_path
 
-        print('Символы: ', self.symbols)
+        print('Symbols: ', self.symbols)
 
     def get_symbol_image(self, symbol):
         folder_name = symbol
         if symbol == 'x':
             folder_name = 'X'
-        if symbol == '*':
-            folder_name = 'times'
+
         symbol_path = os.path.join(self.dataset_path, folder_name)
 
         imgs = [i for i in os.listdir(symbol_path)]
@@ -38,7 +37,7 @@ class SymbolsSequenceGenerator:
         seq = ''.join(random.choices(self.symbols, k=seq_length))
         imgs = []
 
-        print(f"Создание последовательности: {seq}")
+        print(f"Sequence is generating: {seq}")
 
         for char in seq:
             img = self.get_symbol_image(char)
@@ -72,13 +71,13 @@ seq_img = create_seq_image(imgs, 30)
 
 fig, ax = plt.subplots(1, 1, figsize=(8, 6))
 ax.imshow(seq_img, cmap='gray')
-ax.set_title(f'Сгенерированная последовательность: "{seq}"')
+ax.set_title(f'Generated Sequence: "{seq}"')
 ax.axis('off')
 
 plt.tight_layout()
 plt.show()
 
-print(f'Обработка последовательности: "{seq}"')
+print(f'Sequence processing: "{seq}"')
 
 all_data = []
 
@@ -97,7 +96,7 @@ img_rgb = base
 
 plt.figure(figsize=(10, 3))
 plt.imshow(img_rgb)
-plt.title(f'Последовательность: "{seq}" - изображение')
+plt.title(f'Sequence: "{seq}" - image')
 plt.show()
 
 ret, thresh = cv2.threshold(img_rgb, 127, 255, 0)
@@ -120,7 +119,7 @@ for i in range(len(contours_sorted)):
 
 plt.figure(figsize=(10, 3))
 plt.imshow(img_rgb)
-plt.title(f'Последовательность - Контуры символов')
+plt.title(f'Sequence - Symbols contours')
 plt.show()
 
 seq_symbols = []
@@ -132,7 +131,7 @@ for i in range(len(crops)):
 
     plt.figure(figsize=(3, 2))
     plt.imshow(base, cmap="gray")
-    plt.title(f'Символ {i + 1} последовательности')
+    plt.title(f'Symbol {i + 1} of the sequence')
     plt.axis('off')
     seq_symbols.append((x, base))
     plt.show()
@@ -180,11 +179,11 @@ for i in range(min(3, len(all_data_45[0]['symbols']))):
     resized_img = all_data_45[0]['symbols'][i][1]
 
     axes[0, i].imshow(orig_img, cmap='gray')
-    axes[0, i].set_title(f'Исходное: {orig_img.shape}')
+    axes[0, i].set_title(f'Original: {orig_img.shape}')
     axes[0, i].axis('off')
 
     axes[1, i].imshow(resized_img, cmap='gray')
-    axes[1, i].set_title(f'Изменённое: {resized_img.shape}')
+    axes[1, i].set_title(f'Modified: {resized_img.shape}')
     axes[1, i].axis('off')
 
 plt.tight_layout()
@@ -208,10 +207,9 @@ def load_training_data(data_path, symbols_list, training_ratio=0.8):
             img_data = cv2.imread(img_path, cv2.IMREAD_GRAYSCALE)
             if img_data is not None:
                 training_features.append(img_data.flatten())
-                if (s == 'x'):
+                if s == 'x':
                     s = 'X'
-                if (s == '*'):
-                    s = 'times'
+
                 training_labels.append(s)
 
     return np.array(training_features), np.array(training_labels)
@@ -221,7 +219,7 @@ symbols_set = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '+', '-', 'time
                ',']
 x_train, y_train = load_training_data('data', symbols_set)
 
-print(f"Выборка для тренировки: {len(x_train)} изображений")
+print(f"Selection for training: {len(x_train)} images")
 
 neighbor_variants = [1, 3, 5, 7]
 knn_models = {}
@@ -231,7 +229,7 @@ for n in neighbor_variants:
     classifier.fit(x_train, y_train)
     knn_models[n] = classifier
 
-    print(f"Модель KNN при n={n} натренирована.")
+    print(f"KNN model with n={n} is trained.")
 
 
 def predict_symbol(model, img):
@@ -245,8 +243,8 @@ seq_data = all_data_45[0]
 original_text = seq_data['sequence_text']
 symbols_data = seq_data['symbols']
 
-print(f"\n Последовательность:")
-print(f"Оригинал: '{original_text}'")
+print(f"\n Sequence:")
+print(f"Original: '{original_text}'")
 
 models = {f"knn{n}": knn_models[n] for n in neighbor_variants}
 
@@ -254,7 +252,7 @@ results = {}
 
 for model_name, model in models.items():
     print(f"\n{'=' * 50}")
-    print(f"МОДЕЛЬ: {model_name}")
+    print(f"Model: {model_name}")
     print(f"{'=' * 50}")
 
     predicted_symbols = []
@@ -262,16 +260,16 @@ for model_name, model in models.items():
     for j, (x, symbol_img) in enumerate(symbols_data):
         plt.figure(figsize=(3, 2))
         plt.imshow(symbol_img, cmap='gray')
-        plt.title(f'Символ {j + 1} для {model_name}\n{symbol_img.shape}')
+        plt.title(f'Symbol {j + 1} for {model_name}\n{symbol_img.shape}')
         plt.axis('off')
         plt.show()
 
         predicted_char = predict_symbol(model, symbol_img)
         predicted_symbols.append(predicted_char)
-        print(f"    Предсказан как: '{predicted_char}'")
+        print(f"    Predicted as: '{predicted_char}'")
 
     predicted_text = ''.join(predicted_symbols)
-    print(f"Предсказано: '{predicted_text}'")
+    print(f"Predicted: '{predicted_text}'")
 
     correct_chars = sum(1 for orig, pred in zip(original_text, predicted_text) if orig == pred)
     total_chars = len(original_text)
@@ -280,9 +278,9 @@ for model_name, model in models.items():
     if original_text != predicted_text:
         for idx, (orig_char, pred_char) in enumerate(zip(original_text, predicted_text)):
             if orig_char != pred_char:
-                print(f"   Ошибка в позиции {idx + 1}: ожидалось '{orig_char}', получено '{pred_char}'")
+                print(f"   Error at position {idx + 1}: expected '{orig_char}', actual '{pred_char}'")
 
-    print(f"Точность для {model_name}: {accuracy:.2f} ({correct_chars}/{total_chars} символов)")
+    print(f"Accuracy for {model_name}: {accuracy:.2f} ({correct_chars}/{total_chars} symbols)")
 
     results[model_name] = {
         'predicted_text': predicted_text,
@@ -292,7 +290,7 @@ for model_name, model in models.items():
     }
 
 print(f"\n{'=' * 60}")
-print("Все модели:")
+print("All models:")
 print(f"{'=' * 60}")
 
 sorted_results = sorted(results.items(), key=lambda x: x[1]['accuracy'], reverse=True)
@@ -300,5 +298,5 @@ sorted_results = sorted(results.items(), key=lambda x: x[1]['accuracy'], reverse
 for model_name, result in sorted_results:
     accuracy_percent = result['accuracy'] * 100
     print(
-        f"{model_name:5} | Точность: {accuracy_percent:6.2f}% | {result['correct_chars']}/{result['total_chars']} | "
-        f"Предсказание: '{result['predicted_text']}'")
+        f"{model_name:5} | Accuracy: {accuracy_percent:6.2f}% | {result['correct_chars']}/{result['total_chars']} | "
+        f"Prediction: '{result['predicted_text']}'")

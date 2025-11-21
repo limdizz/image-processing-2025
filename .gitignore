@@ -214,3 +214,6 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+/Practice_10/kth_tips_grey_200x200/
+/Practice_9/data/
