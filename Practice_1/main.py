@@ -9,7 +9,7 @@ plt.title("Исходное изображение")
 plt.imshow(image)
 plt.show()
 
-# 2. постройте гистограмму
+# 2. Постройте гистограмму
 histSize = 256
 histRange = (0, 256)
 accumulate = False
@@ -30,7 +30,7 @@ plt.title("Нормализованная гистограмма")
 plt.show()
 
 
-# 3. реализуйте алгоритм гамма коррекции с параметром гамма <1, >1.
+# 3. Реализуйте алгоритм гамма коррекции с параметром гамма <1, >1.
 def gamma_correction(src, gamma):
     inv_gamma = 1 / gamma
 
@@ -76,7 +76,7 @@ mse_2 = mean_squared_error(image_gray, gamma_more_gray)
 print(f"MSE between original image and image with gamma 1.5: {mse_2:}")
 
 
-# 5. реализуйте алгоритм статистической цветокоррекции на основе статистики eq_gray.
+# 5. Реализуйте алгоритм статистической цветокоррекции на основе статистики eq_gray.
 def statistical_color_correction(source, target):
     source_mean = np.mean(source)
     source_std = np.std(source)
